@@ -217,7 +217,7 @@ internal object FileUtils {
 
     private fun bitmapToArray(bmp: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
         bmp.recycle()
         return byteArray
