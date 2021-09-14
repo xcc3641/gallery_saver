@@ -6,7 +6,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'dart:ui' as ui;
-import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DavinciCapture {
@@ -14,29 +13,29 @@ class DavinciCapture {
   /// if the fileName is not set, it sets the file name as "davinci".
   /// you can define whether to openFilePreview or returnImageUint8List
   /// openFilePreview is true by default.
-  static Future click(GlobalKey key,
-      {String fileName = 'davinci',
-      bool openFilePreview = true,
-      bool saveToDevice = false,
-      String? albumName,
-      double? pixelRatio,
-      bool returnImageUint8List = false}) async {
+  static Future click(
+    GlobalKey key, {
+    String fileName = 'davinci',
+    bool saveToDevice = false,
+    String? albumName,
+    double? pixelRatio,
+    bool returnImageUint8List = false,
+  }) async {
     try {
       pixelRatio ??= ui.window.devicePixelRatio;
 
       /// finding the widget in the current context by the key.
-      var repaintBoundary =
-          key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      var repaintBoundary = key.currentContext!.findRenderObject() as RenderRepaintBoundary;
 
       /// With the repaintBoundary we got from the context, we start the createImageProcess
       await _createImageProcess(
-          albumName: albumName,
-          fileName: fileName,
-          saveToDevice: saveToDevice,
-          returnImageUint8List: returnImageUint8List,
-          openFilePreview: openFilePreview,
-          repaintBoundary: repaintBoundary,
-          pixelRatio: pixelRatio);
+        albumName: albumName,
+        fileName: fileName,
+        saveToDevice: saveToDevice,
+        returnImageUint8List: returnImageUint8List,
+        repaintBoundary: repaintBoundary,
+        pixelRatio: pixelRatio,
+      );
     } catch (e) {
       /// if the above process is failed, the error is printed.
       print(e);
@@ -48,14 +47,7 @@ class DavinciCapture {
   /// you can define whether to openFilePreview or returnImageUint8List
   /// If the image is blurry, calculate the pixelratio dynamically. See the readme
   /// for more info on how to do it.
-  static Future offStage(Widget widget,
-      {Duration? wait,
-      bool openFilePreview = true,
-      bool saveToDevice = false,
-      String fileName = 'davinci',
-      String? albumName,
-      double? pixelRatio,
-      bool returnImageUint8List = false}) async {
+  static Future offStage(Widget widget, {Duration? wait, bool openFilePreview = true, bool saveToDevice = false, String fileName = 'davinci', String? albumName, double? pixelRatio, bool returnImageUint8List = false}) async {
     /// finding the widget in the current context by the key.
     final RenderRepaintBoundary repaintBoundary = RenderRepaintBoundary();
 
@@ -72,8 +64,7 @@ class DavinciCapture {
     try {
       final RenderView renderView = RenderView(
         window: ui.window,
-        child: RenderPositionedBox(
-            alignment: Alignment.center, child: repaintBoundary),
+        child: RenderPositionedBox(alignment: Alignment.center, child: repaintBoundary),
         configuration: ViewConfiguration(
           size: logicalSize,
           devicePixelRatio: 1.0,
@@ -87,8 +78,7 @@ class DavinciCapture {
       renderView.prepareInitialFrame();
 
       /// setting the rootElement with the widget that has to be captured
-      final RenderObjectToWidgetElement<RenderBox> rootElement =
-          RenderObjectToWidgetAdapter<RenderBox>(
+      final RenderObjectToWidgetElement<RenderBox> rootElement = RenderObjectToWidgetAdapter<RenderBox>(
         container: repaintBoundary,
         child: Directionality(
           textDirection: TextDirection.ltr,
@@ -129,7 +119,6 @@ class DavinciCapture {
         albumName: albumName,
         fileName: fileName,
         returnImageUint8List: returnImageUint8List,
-        openFilePreview: openFilePreview,
         repaintBoundary: repaintBoundary,
         pixelRatio: pixelRatio,
       );
@@ -139,21 +128,12 @@ class DavinciCapture {
   }
 
   /// create image process
-  static Future _createImageProcess(
-      {saveToDevice,
-      albumName,
-      fileName,
-      returnImageUint8List,
-      openFilePreview,
-      repaintBoundary,
-      pixelRatio}) async {
+  static Future _createImageProcess({saveToDevice, albumName, fileName, returnImageUint8List, repaintBoundary, pixelRatio}) async {
     /// the boundary is converted to Image.
-    final ui.Image image =
-        await repaintBoundary.toImage(pixelRatio: pixelRatio);
+    final ui.Image image = await repaintBoundary.toImage(pixelRatio: pixelRatio);
 
     /// The raw image is converted to byte data.
-    final ByteData? byteData =
-        await image.toByteData(format: ui.ImageByteFormat.png);
+    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
     /// The byteData is converted to uInt8List image aka memory Image.
     final u8Image = byteData!.buffer.asUint8List();
@@ -166,29 +146,6 @@ class DavinciCapture {
     if (returnImageUint8List) {
       return u8Image;
     }
-
-    /// if the openFilePreview is true, open the image in openFile
-    if (openFilePreview) {
-      await _openImagePreview(u8Image, fileName);
-    }
-  }
-
-  static Future _openImagePreview(Uint8List u8Image, String imageName) async {
-    /// getting the temp directory of the app.
-    String dir = (await getApplicationDocumentsDirectory()).path;
-
-    /// Saving the file with the file name in temp directory.
-    File file = File('$dir/$imageName.png');
-
-    /// the image file is created
-    await file.writeAsBytes(u8Image);
-
-    /// The image file is opened.
-    await OpenFile.open(
-      '$dir/$imageName.png',
-    );
-
-    return file;
   }
 
   /// To save the images locally
