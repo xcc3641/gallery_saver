@@ -1,3 +1,13 @@
+# 继承
+
+```yaml
+  gallery_saver:
+    git:
+      url: git@github.com:xcc3641/gallery_saver.git
+      ref: dev
+```
+
+
 # Davinci ![Supported Platforms](https://img.shields.io/badge/platforms-Android%20%7C%20iOS-green.svg) ![Pub version](https://img.shields.io/pub/v/davinci) ![MIT Lisence](https://img.shields.io/badge/license-MIT-blue.svg) ![linter](https://img.shields.io/badge/style-pedantic-blue) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/066e267c7beb4fcaa23ba00f2b3eb6b8)](https://www.codacy.com/gh/Imgkl/davinci/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Imgkl/davinci&amp;utm_campaign=Badge_Grade) ![PR's welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 <img src ="https://i.ibb.co/wJMkxM5/Oakbridge-Middle-School.png"> 
 
